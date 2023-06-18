@@ -1,3 +1,5 @@
+package bjFinal;
+
 import javax.sound.sampled.*;
 import javax.swing.*;
 import java.io.File;
@@ -8,39 +10,42 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 public class blackJackBGui {
     private int y = 0;
 
+    public boolean hitPerf;
+    String fileName;
+
 
 
     private boolean audioStatus = false;
     private boolean hitStay = false;
 
-    blackJackBGui() {
+    blackJackBGui(String fileName) {
+        this.fileName = fileName;
+        JPanel panel = new JPanel();
         JFrame bFrame = new JFrame();
         bFrame.setDefaultCloseOperation(EXIT_ON_CLOSE);
         bFrame.setSize(1600, 215);
         bFrame.setLocation(0, 0);
         bFrame.setVisible(true);
-        JButton play = new JButton("Play/Pause");
+        JButton play = new JButton("Play");
         JButton stay = new JButton("Stay");
         JButton hit = new JButton("Hit");
         JButton raise = new JButton("Raise");
-        play.setBounds(0, 0, 350, 200);
-        stay.setBounds(400, 0, 350, 200);
-        hit.setBounds(800, 0, 350, 200);
-        raise.setBounds(1280, 0, 350, 200);
-
+        JButton test = new JButton();
+        play.setBounds(0, 0, 520, 200);
+        stay.setBounds(533, 0, 520, 200);
+        hit.setBounds(1066, 0, 520, 200);
+        test.setBounds(1500,0,0,0);
+        test.setVisible(false);
         bFrame.add(play);
         bFrame.add(stay);
         bFrame.add(hit);
-        bFrame.add(raise);
+        bFrame.add(test);
 
 
 
         play.addActionListener(p ->{
-            play();
-
             try {
-                audioMain(y);
-                y++;
+                audioMain(fileName);
             } catch (UnsupportedAudioFileException ex) {
                 throw new RuntimeException(ex);
             } catch (LineUnavailableException ex) {
@@ -50,50 +55,46 @@ public class blackJackBGui {
             }
             finally{
                 play.setVisible(false);
-                stay.setBounds(50,0,450,200);
-                hit.setBounds(600,0,450,200);
-                raise.setBounds(1150,0,450,200);
+                stay.setBounds(0,0,750,200);
+                hit.setBounds(850,0,750,200);
+
             }
 
         });
         stay.addActionListener(q -> {
             stay();
-            hitStay();
         });
         hit.addActionListener(x -> {
             hit();
-            hitStay();
         });
 
     }
 
-    public void pause() {
-        audioStatus = false;
-    }
-
-    public void play() {
-        audioStatus = true;
-    }
 
     public void hit() {
         hitStay = true;
+        hitPerf = true;
     }
 
     public void stay() {
         hitStay = false;
     }
 
-    public boolean hitStay() {
+    public boolean hitStay(){
         return hitStay;
     }
 
-    public static void audioMain(int y) throws UnsupportedAudioFileException, LineUnavailableException, IOException {
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File("wonder.wav"));
+    public boolean actionHit(){ return hitPerf; }
+
+    public void setHit(){ hitPerf = false; }
+
+
+
+    public static void audioMain(String fileName) throws UnsupportedAudioFileException, LineUnavailableException, IOException {
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File( "audioFolder/"+fileName));
             Clip clip = AudioSystem.getClip();
             clip.open(audioStream);
             clip.start();
-
-
     }
 
 
