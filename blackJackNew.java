@@ -1,10 +1,11 @@
+package bjFinal;
+
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class blackJackNew {
+    int z = 0;
 
     blackJackTGui cardsNew = new blackJackTGui();
-    ArrayList <String> cards = new ArrayList <> ();
     private int chips = 100;
     private int handVal = 0;
     private String[] cardArray = {"jack","queen","king","ace"};
@@ -12,11 +13,11 @@ public class blackJackNew {
     private String suit;
     blackJackNew(String name, String bet) throws IOException {
         chips -= Integer.parseInt(bet);
-        for(int i=0;i<2;i++)
-            hit();
+        //for(int i=0;i<2;i++)
+            //hit();
     }
 
-    public void hit(){
+    public void hit() throws IOException {
         int s = (int) (Math.random()*4);
         suit = suits[s];
         int x = (int) (Math.random()*13)+2;
@@ -25,37 +26,39 @@ public class blackJackNew {
         }
         else{
             handVal += x;
-            cards.add(String.valueOf(x));
+            cardsNew.newCard(String.valueOf(x),suit,handVal,z);
         }
-
+        z++;
     }
 
     public void stay(){
 
     }
 
-    public void faces(int x){
-        if(x == 14){
-            ace();
-        }
+    public void faces(int x) throws IOException{
+
+        if(x == 14){ ace(); }
+
+        x-=11;
+
+        if(x!= 14){ handVal += 10; }
+
+        cardsNew.newCard(cardArray[x],suit,handVal,z);
+
+
+    }
+
+    public void ace() throws IOException {
+        if(handVal < 11){ handVal++; }
         else {
-            x -= 11;
-            cards.add(cardArray[x]);
-            handVal += 10;
+            if (cardsNew.aceShow()) {
+                handVal += 11;
+            } else if (!(cardsNew.aceShow()))   {
+                handVal++;
+            }
         }
     }
 
-    public void ace(){
-        if(handVal < 11){
-            handVal++;
-        }
-        else{
-            cardsNew.aceShow();
-        }
-    }
-
-    public int getHandVal(){
-        return handVal;
-    }
+    public int getHandVal(){ return handVal; }
 
 }
